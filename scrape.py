@@ -64,6 +64,7 @@ for url in urls:
     images = driver.find_elements(By.TAG_NAME,'img')
 
     # Loop through the images and download the ones that match the keywords
+    print('Downloading Images...')
     pbar = tqdm(range(len(images)), unit="images")
     for i in pbar:
         image = images[i]
@@ -74,6 +75,7 @@ for url in urls:
             # Download the image and save it to the folder
             if src is not None and isinstance(src, str):
                 urllib.request.urlretrieve(src, os.path.join(folder_path, f"{i}.jpg"))
+    print('Done.')
 
 # Close the web driver
 driver.quit()
