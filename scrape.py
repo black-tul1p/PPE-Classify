@@ -7,18 +7,21 @@ import os
 import time
 import urllib.request
 
+# Store queries
+searches = ["one person wearing lab coat", "lab tech wearing gloves", "lab tech wearing scrub cap"]
+desc = ["lab_coat", "gloves", "scrub_cap"]
+
+# Make urls for queries
+search_url = [query.replace(" ", "+") for query in searches]
+urls = [f"https://www.google.com/search?q={url}&tbm=isch" for url in search_url]
+
 # Set up the web driver
 driver_path = '/Users/divay/Downloads/ClassML/Driver/chromedriver' # replace with your driver path
 root_path = os.path.join('.', 'Images')
 service = Service(driver_path)
 driver = webdriver.Chrome(service=service)
 
-# URL of the Google Images search page
-searches = ["one person wearing lab coat", "lab tech wearing gloves", "lab tech wearing scrub cap"]
-desc = ["lab_coat", "gloves", "scrub_cap"]
-search_url = [query.replace(" ", "+") for query in searches]
-urls = [f"https://www.google.com/search?q={url}&tbm=isch" for url in search_url]
-
+# Scrape images
 counter = 1
 for url in urls:
     print(f"\n>>> Scraping images for {desc[counter-1]}")
