@@ -17,7 +17,7 @@ search_url = [query.replace(" ", "+") for query in searches]
 urls = [f"https://www.google.com/search?q={url}&tbm=isch" for url in search_url]
 
 # Set up the web driver
-driver_path = '/Users/divay/Downloads/ClassML/Driver/chromedriver' # replace with your driver path
+driver_path = os.path.join('.', 'Driver', 'chromedriver')
 root_path = os.path.join('.', 'Images')
 service = Service(driver_path)
 driver = Chrome(service=service)
@@ -28,15 +28,15 @@ counter = 1
 for url in urls:
     # Display current query
     print(f"\n>>> Scraping images for {desc[counter-1]}")
-    counter += 1
 
-    # Create a folder to store the scraped images
+    # Create a folder to store the scraped images and update counter
     folder_path = os.path.join(root_path, desc[counter-1])
     if not os.path.exists(folder_path):
         os.makedirs(folder_path)
     else:
         shutil.rmtree(folder_path)
         os.makedirs(folder_path)
+    counter += 1
 
     # Navigate to the Google Images search page
     driver.get(url)
@@ -71,7 +71,8 @@ for url in urls:
         src = image.get_attribute('src')
         alt = image.get_attribute('alt')
         
-        if alt and any(keyword in alt.lower() for keyword in keywords):
+        # if alt and any(keyword in alt.lower() for keyword in keywords):
+        if True:
             # Download the image and save it to the folder
             if src is not None and isinstance(src, str):
                 urllib.request.urlretrieve(src, os.path.join(folder_path, f"{i}.jpg"))
