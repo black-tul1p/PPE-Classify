@@ -1,6 +1,8 @@
+import os
 import torch
 import torch.nn as nn
 from tqdm import tqdm
+from datetime import datetime
 import matplotlib.pyplot as plt
 from torch.utils.data import DataLoader
 from torch.utils.data import random_split
@@ -121,4 +123,8 @@ class Trainer:
         plt.ylabel('Accuracy')
         plt.title('Model Accuracy')
         plt.legend()
-        plt.show()
+        # plt.show()
+        folder_path = os.path.join('.', 'Plots')
+        if not os.path.exists(folder_path):
+            os.makedirs(folder_path)
+        plt.savefig(os.path.join(folder_path, f"accuracy_{datetime.now().strftime('%H_%M_%S')}"))

@@ -1,8 +1,9 @@
-.vscode/
+# Ignore unneeded folders
+__pycache__
+.vscode
 .DS_Store
-
-# Ignore folders with scraped images
-Images/
+Plots
+Images
 
 # Ignore python generated files
 *.pyc
