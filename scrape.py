@@ -12,13 +12,14 @@ driver = webdriver.Chrome(service=service)
 
 # URL of the Google Images search page
 searches = ["single person in lab coat", "lab tech wearing gloves", "lab tech wearing scrub cap"]
+desc = ["lab_coat", "gloves", "scrub_cap"]
 search_url = [query.replace(" ", "+") for query in searches]
 urls = [f"https://www.google.com/search?q={url}&tbm=isch" for url in search_url]
 
 counter = 1
 for url in urls:
     # Create a folder to store the scraped images
-    folder_name = f'search_{counter}_i'
+    folder_name = desc[counter-1]
     if not os.path.exists(folder_name):
         os.makedirs(folder_name)
     counter += 1

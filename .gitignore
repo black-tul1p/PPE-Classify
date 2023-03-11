@@ -1,3 +1,5 @@
-# Ignore folders with scraped images
-search_*/
 .vscode/
+.DS_Store
+
+# Ignore folders with scraped images
+Images/
