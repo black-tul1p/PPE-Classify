@@ -1,10 +1,10 @@
-from selenium import webdriver
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
-from selenium.webdriver.support.wait import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-from tqdm import tqdm
+from selenium.webdriver import Chrome
 import os, shutil, time
+from tqdm import tqdm
 import urllib.request
 
 # Store queries and keywords
@@ -20,7 +20,7 @@ urls = [f"https://www.google.com/search?q={url}&tbm=isch" for url in search_url]
 driver_path = '/Users/divay/Downloads/ClassML/Driver/chromedriver' # replace with your driver path
 root_path = os.path.join('.', 'Images')
 service = Service(driver_path)
-driver = webdriver.Chrome(service=service)
+driver = Chrome(service=service)
 driver_wait = 1
 
 # Scrape images
