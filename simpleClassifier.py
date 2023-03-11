@@ -1,6 +1,7 @@
 import torch
 import torch.nn as nn
 from tqdm import tqdm
+import matplotlib.pyplot as plt
 from torch.utils.data import DataLoader
 from torch.utils.data import random_split
 from ScrapedDataset import ScrapedDataset
@@ -53,6 +54,11 @@ class Trainer:
         self.trainloader = DataLoader(train_dataset, batch_size=batch_size, shuffle=shuffle)
         self.testloader = DataLoader(test_dataset, batch_size=batch_size, shuffle=False)
 
+        # Initialize empty lists for train and test accuracy
+        self.train_accuracy = []
+        self.test_accuracy = []
+
+
     def train(self, criterion, optimizer, epochs=10):
         # Set up the model and optimizer
         self.net.to(self.device)
@@ -77,14 +83,27 @@ class Trainer:
                           (epoch + 1, i + 1, running_loss / 100))
                     running_loss = 0.0
 
-        print('Finished Training')
+            # Calculate train and test accuracy after each epoch
+            train_acc = self._accuracy(self.trainloader)
+            test_acc = self._accuracy(self.testloader)
+            self.train_accuracy.append(train_acc)
+            self.test_accuracy.append(test_acc)
 
     def eval(self):
         # Evaluate the model on the test set
+        accuracy = self._accuracy(self.testloader)
+        print('Accuracy of the network on the test images: %.2f%%' % accuracy)
+        return accuracy
+
+    def save_model(self):
+        torch.save(self.net.state_dict(), 'model.pth')
+        print('Model saved.')
+
+    def _accuracy(self, dataloader):
         correct = 0
         total = 0
         with torch.no_grad():
-            for data in self.testloader:
+            for data in dataloader:
                 inputs, labels = data
                 inputs, labels = inputs.to(self.device), labels.to(self.device)
                 outputs = self.net(inputs)
@@ -92,9 +111,14 @@ class Trainer:
                 total += labels.size(0)
                 correct += (predicted == labels).sum().item()
         accuracy = (100 * correct / total)
-        print('Accuracy of the network on the test images: %.2f%%' % accuracy)
         return accuracy
+    
 
-    def save_model(self):
-        torch.save(self.net.state_dict(), 'model.pth')
-        print('Model saved.')
+    def plot_accuracy(self):
+        plt.plot(range(1, len(self.train_accuracy) + 1), self.train_accuracy, label='Train')
+        plt.plot(range(1, len(self.test_accuracy) + 1), self.test_accuracy, label='Test')
+        plt.xlabel('Epoch')
+        plt.ylabel('Accuracy')
+        plt.title('Model Accuracy')
+        plt.legend()
+        plt.show()

@@ -3,3 +3,6 @@
 
 # Ignore folders with scraped images
 Images/
+
+# Ignore python generated files
+*.pyc
