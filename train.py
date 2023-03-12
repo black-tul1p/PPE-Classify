@@ -39,7 +39,7 @@ class Trainer:
         # Split the dataset into train and test sets
         train_dataset, test_dataset = random_split(dataset, [train_size, test_size])
         self.train_data = DataLoader(train_dataset, batch_size=batch_size, shuffle=shuffle)
-        self.test_data = DataLoader(test_dataset, batch_size=batch_size, shuffle=False)
+        self.test_data = DataLoader(test_dataset, batch_size=batch_size)
 
 
     def train(self, epochs):
@@ -101,7 +101,7 @@ class Trainer:
         return test_loss, test_accuracy
 
 
-    def plot_loss(self):
+    def plot_loss(self, show=False):
         plt.plot(range(1, len(self.train_loss) + 1), self.train_loss, label='Train')
         plt.plot(range(1, len(self.test_loss) + 1), self.test_loss, label='Test')
         plt.xlabel('Epoch')
@@ -112,9 +112,11 @@ class Trainer:
         if not os.path.exists(folder_path):
             os.makedirs(folder_path)
         plt.savefig(os.path.join(folder_path, f"loss_{datetime.now().strftime('%H_%M_%S')}"))
+        if show:
+            plt.show()
 
 
-    def plot_accuracy(self):
+    def plot_accuracy(self, show=False):
         plt.plot(self.train_accuracy, label='Train')
         plt.plot(self.test_accuracy, label='Test')
         plt.xlabel('Epoch')
@@ -126,3 +128,9 @@ class Trainer:
         if not os.path.exists(folder_path):
             os.makedirs(folder_path)
         plt.savefig(os.path.join(folder_path, f"accuracy_{datetime.now().strftime('%H_%M_%S')}"))
+        if show:
+            plt.show()
+
+    def save_model(self, file_path="model.pth"):
+        torch.save(self.model.state_dict(), file_path)
+        print(f"Model parameters saved to {file_path}")
