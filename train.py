@@ -132,5 +132,8 @@ class Trainer:
             plt.show()
 
     def save_model(self, file_path="model.pth"):
-        torch.save(self.model.state_dict(), file_path)
-        print(f"Model parameters saved to {file_path}")
+        if not os.path.isdir('Checkpoints'):
+            os.mkdir('Checkpoints')
+        path = os.path.join('Checkpoints', file_path)
+        torch.save(self.model.state_dict(), path)
+        print(f"Model parameters saved to {path}")

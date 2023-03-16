@@ -2,7 +2,6 @@ import os
 import numpy as np
 from PIL import Image
 from torch.utils.data import Dataset
-import torchvision.transforms as transforms
 
 class ScrapedDataset(Dataset):
     def __init__(self, root_dir='./Images/', transform=None):
