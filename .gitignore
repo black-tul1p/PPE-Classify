@@ -4,6 +4,12 @@ __pycache__
 .DS_Store
 Plots
 Images
+Checkpoints
 
 # Ignore python generated files
 *.pyc
+
+# Ignore images
+*.jpg
+*.png
+*.jpeg
