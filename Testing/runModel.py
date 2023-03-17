@@ -6,16 +6,16 @@ root_dir = '/'.join(abs_path.split('/')[:-1])
 sys.path.insert(0, root_dir)
 
 # Model imports
-from simpleClassifier import NNet
-# from complexClassifier import NNet
+# from simpleClassifier import NNet
+from complexClassifier import NNet
 from resnetClassifier import ResNetClassifier
 from Utils.train import Trainer
 
 # Globals
 predict = True
 train = False
-model_name = 'simple.pth'  # simpleCLassifier
-# model_name = 'complex.pth' # complexClassifier
+# model_name = 'simple.pth'  # simpleCLassifier
+model_name = 'complex.pth' # complexClassifier
 model_path = os.path.join('..', 'Checkpoints', model_name)
 image_path = 'test.jpg'
 
