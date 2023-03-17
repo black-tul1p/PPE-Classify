@@ -6,14 +6,17 @@ root_dir = '/'.join(abs_path.split('/')[:-1])
 sys.path.insert(0, root_dir)
 
 # Model imports
-from complexClassifier import NNet
+from simpleClassifier import NNet
+# from complexClassifier import NNet
 from resnetClassifier import ResNetClassifier
 from Utils.train import Trainer
 
 # Globals
-predict = False
-train = True
-model_path = os.path.join('..', 'Checkpoints', 'complex2.pth')
+predict = True
+train = False
+model_name = 'simple.pth'  # simpleCLassifier
+# model_name = 'complex.pth' # complexClassifier
+model_path = os.path.join('..', 'Checkpoints', model_name)
 image_path = 'test.jpg'
 
 # Training model
@@ -26,14 +29,13 @@ if train:
     # Initialize model and define device
     # model = ResNetClassifier(num_classes=3)
     model = NNet()
-    # model.load_model(model_path='model.pth')
 
     # Initialize complex trainer
     trainer = Trainer(model, batch_size=batch_size, shuffle=True, learning_rate=learning_rate)
     trainer.train(epochs)
     trainer.plot_loss()
     trainer.plot_accuracy()
-    # trainer.save_model("complex.pth")
+    trainer.save_model(model_name)
 
 # Image classification
 if predict:
