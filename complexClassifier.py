@@ -1,4 +1,3 @@
-import os
 import torch
 from PIL import Image
 import torch.nn as nn
@@ -33,7 +32,7 @@ class NNet(nn.Module):
         # Handle saved model parameter loading
         self.params = params
         if self.params is not None:
-            self.load_model(self.params)
+            self.load_model()
 
         # Store output labels
         self.labels = {
@@ -83,6 +82,9 @@ class NNet(nn.Module):
             return self.labels[int(predicted_idx)]
         else: return "No parameters supplied"
 
-    def load_model(self, model_path):
-        self.load_state_dict(torch.load(model_path))
-        self.eval()
+    def load_model(self):
+        if isinstance(self.params, str):
+            self.load_state_dict(torch.load(self.params))
+            self.eval()
+        else:
+            print("Incorrect path or format.")
