@@ -115,7 +115,7 @@ class Trainer:
         folder_path = os.path.join(root_dir, 'Plots')
         if not os.path.exists(folder_path):
             os.makedirs(folder_path)
-        plt.savefig(os.path.join(folder_path, f"loss_{datetime.now().strftime('%H_%M_%S')}"))
+        plt.savefig(os.path.join(folder_path, f"loss_{datetime.now().strftime('%y_%m_%d-%H_%M_%S')}"))
         if show:
             plt.show()
 
