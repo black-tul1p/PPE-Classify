@@ -3,8 +3,12 @@ import numpy as np
 from PIL import Image
 from torch.utils.data import Dataset
 
+# Get root folder absolute path
+abs_path = os.path.abspath('.')
+root_dir = '/'.join(abs_path.split('/')[:-1])
+
 class ScrapedDataset(Dataset):
-    def __init__(self, root_dir='./Images/', transform=None):
+    def __init__(self, root_dir=os.path.join(root_dir, 'Images'), transform=None):
         self.root_dir = root_dir
         self.transform = transform
         self.classes = sorted([d for d in os.listdir(root_dir) if os.path.isdir(os.path.join(root_dir, d))])

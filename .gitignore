@@ -1,15 +1,14 @@
 # Ignore unneeded folders
-__pycache__
+__pycache__/
 .vscode
 .DS_Store
 Plots
 Images
-Checkpoints
 
 # Ignore python generated files
 *.pyc
 
-# Ignore images
-*.jpg
-*.png
-*.jpeg
+# Ignore testing images
+Testing/*.jpg
+Testing/*.png
+Testing/*.jpeg
