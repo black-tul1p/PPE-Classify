@@ -7,7 +7,7 @@ from datetime import datetime
 import matplotlib.pyplot as plt
 from torch.utils.data import DataLoader
 from torch.utils.data import random_split
-from ScrapedDataset import ScrapedDataset
+from Utils.scrapedDataset import scrapedDataset
 import torchvision.transforms as transforms
 
 # Get root folder absolute path
@@ -34,7 +34,7 @@ class Trainer:
              transforms.Normalize(mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5])])
 
         # Create the dataset
-        dataset = ScrapedDataset(transform=transform)
+        dataset = scrapedDataset(transform=transform)
 
         # Determine the sizes of the train and test sets
         train_size = int(0.8 * len(dataset))

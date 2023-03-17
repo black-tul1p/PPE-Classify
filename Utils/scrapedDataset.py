@@ -7,7 +7,7 @@ from torch.utils.data import Dataset
 abs_path = os.path.abspath('.')
 root_dir = '/'.join(abs_path.split('/')[:-1])
 
-class ScrapedDataset(Dataset):
+class scrapedDataset(Dataset):
     def __init__(self, root_dir=os.path.join(root_dir, 'Images'), transform=None):
         self.root_dir = root_dir
         self.transform = transform
@@ -21,12 +21,14 @@ class ScrapedDataset(Dataset):
                 if img_file.endswith('.jpg') or img_file.endswith('.jpeg') or img_file.endswith('.png'):
                     self.imgs.append((img_path, self.class_to_idx[c]))
 
+
     def __getitem__(self, index):
         img_path, label = self.imgs[index]
         img = Image.open(img_path).convert('RGB')
         if self.transform:
             img = self.transform(img)
         return img, label
+
 
     def __len__(self):
         return len(self.imgs)
