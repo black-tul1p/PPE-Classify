@@ -1,8 +1,11 @@
+import os
 import torch
+from PIL import Image
 import torch.nn as nn
+import torchvision.transforms as transforms
 
 class NNet(nn.Module):
-    def __init__(self) -> None:
+    def __init__(self, params=None) -> None:
         super(NNet, self).__init__()
 
         # Add convolutional layers to extract features
@@ -27,6 +30,18 @@ class NNet(nn.Module):
         self.fc2 = nn.Linear(512, 256)
         self.fc3 = nn.Linear(256, 5)
 
+        # Handle saved model parameter loading
+        self.params = params
+        if self.params is not None:
+            self.load_model(self.params)
+
+        # Store output labels
+        self.labels = {
+            0: 'gloves',
+            1: 'lab_coat',
+            2: 'scrub_cap'
+        }
+
     def forward(self, x):
         # Apply batch-normalized convolutional layers with ReLU activation and max pooling
         x = self.bn1(nn.functional.relu(self.conv1(x)))
@@ -44,6 +59,29 @@ class NNet(nn.Module):
         # Apply output layer with softmax activation
         x = self.fc3(x)
         return x
+    
+    def predict_img(self, image_path: str):
+        if self.params is not None:
+            # Load and preprocess the image
+            image = Image.open(image_path)
+            transform = transforms.Compose([
+                transforms.Resize((64, 64)),
+                transforms.ToTensor(),
+                transforms.Normalize(mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5])
+            ])
+            input_tensor = transform(image)
+            input_batch = input_tensor.unsqueeze(0) # type: ignore
+
+            # Pass the image through the model
+            with torch.no_grad():
+                output = self(input_batch)
+
+            # Get the predicted label
+            probabilities = torch.nn.functional.softmax(output[0], dim=0)
+            predicted_idx = torch.argmax(probabilities).item()
+
+            return self.labels[int(predicted_idx)]
+        else: return "No parameters supplied"
 
     def load_model(self, model_path):
         self.load_state_dict(torch.load(model_path))
