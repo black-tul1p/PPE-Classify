@@ -1,6 +1,13 @@
 import os
 from PIL import Image
 
+# Get Images folder absolute path
+abs_path = os.path.abspath('.')
+root_dir = '/'.join(abs_path.split('/')[:-1])
+imgs_dir = os.path.join(root_dir, 'Images')
+# Get list of image dataset folders
+classes = sorted([os.path.join(imgs_dir, d) for d in os.listdir(imgs_dir) if os.path.isdir(os.path.join(imgs_dir, d))])
+
 def delete_duplicate_images(directory):
     # create a dictionary to store image hashes and file paths
     image_dict = {}
@@ -24,4 +31,5 @@ def delete_duplicate_images(directory):
             else:
                 image_dict[hash_value] = filepath
 
-# delete_duplicate_images(os.path.join('.', 'Images', 'lab_coat'))
+for folder in classes:
+    delete_duplicate_images(folder)
