@@ -20,7 +20,7 @@ class scrapedDataset(Dataset):
                 img_path = os.path.join(class_path, img_file)
                 if img_file.endswith('.jpg') or img_file.endswith('.jpeg') or img_file.endswith('.png'):
                     self.imgs.append((img_path, self.class_to_idx[c]))
-
+        print(f'Training model on classes: {self.classes}')
 
     def __getitem__(self, index):
         img_path, label = self.imgs[index]

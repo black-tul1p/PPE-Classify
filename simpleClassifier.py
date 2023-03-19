@@ -25,9 +25,11 @@ class NNet(nn.Module):
 
         # Store output labels
         self.labels = {
-            0: 'gloves',
-            1: 'lab_coat',
-            2: 'scrub_cap'
+            0: 'face_shield',
+            1: 'gloves',
+            2: 'goggles',
+            3: 'lab_coat',
+            4: 'scrub_cap'
         }
 
     def forward(self, x):

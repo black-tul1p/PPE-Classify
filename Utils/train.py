@@ -15,13 +15,14 @@ abs_path = os.path.abspath('.')
 root_dir = '/'.join(abs_path.split('/')[:-1])
 
 class Trainer:
-    def __init__(self, model, batch_size=32, shuffle=False, learning_rate=0.001):
+    def __init__(self, model, batch_size=32, shuffle=False, learning_rate=0.001, decay=0.0001):
         self.model = model
         self.batch_size = batch_size
         self.learning_rate = learning_rate
+        self.decay = decay
         self.device = torch.device("cuda" if torch.cuda.is_available() else "mps" if torch.backends.mps.is_available() else "cpu") # type: ignore
         self.criterion = nn.CrossEntropyLoss()
-        self.optimizer = optim.Adam(self.model.parameters(), lr=self.learning_rate)
+        self.optimizer = optim.Adam(self.model.parameters(), lr=self.learning_rate, weight_decay=self.decay)
         self.train_loss = []
         self.train_accuracy = []
         self.test_loss = []
