@@ -30,7 +30,7 @@ class Trainer:
 
          # Define the dataset and data loaders
         transform = transforms.Compose(
-            [transforms.Resize((64, 64)),
+            [transforms.Resize((224, 224)),
              transforms.ToTensor(),
              transforms.Normalize(mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5])])
 
@@ -43,8 +43,8 @@ class Trainer:
 
         # Split the dataset into train and test sets
         train_dataset, test_dataset = random_split(dataset, [train_size, test_size])
-        self.train_data = DataLoader(train_dataset, batch_size=batch_size, shuffle=shuffle)
-        self.test_data = DataLoader(test_dataset, batch_size=batch_size)
+        self.train_data = DataLoader(train_dataset, batch_size=batch_size, shuffle=shuffle, drop_last=True)
+        self.test_data = DataLoader(test_dataset, batch_size=batch_size, drop_last=True)
 
 
     def train(self, epochs):

@@ -12,8 +12,8 @@ from resnetClassifier import ResNetClassifier
 from Utils.train import Trainer
 
 # Globals
-predict = True
-train = False
+predict = False
+train = True
 # model_name = 'simple.pth'  # simpleCLassifier
 model_name = 'complex.pth' # complexClassifier
 model_path = os.path.join('..', 'Checkpoints', model_name)
@@ -22,20 +22,21 @@ image_path = 'test.jpg'
 # Training model
 if train:
     # Define the hyperparameters
-    epochs = 50
-    batch_size = 32
+    epochs = 10
+    batch_size = 16
     learning_rate = 0.001
+    decay = 0.0000
 
     # Initialize model and define device
-    # model = ResNetClassifier(num_classes=3)
-    model = NNet()
+    model = ResNetClassifier()
+    # model = NNet()
 
     # Initialize complex trainer
-    trainer = Trainer(model, batch_size=batch_size, shuffle=True, learning_rate=learning_rate)
+    trainer = Trainer(model, batch_size=batch_size, shuffle=True, learning_rate=learning_rate, decay=decay)
     trainer.train(epochs)
     trainer.plot_loss()
     trainer.plot_accuracy()
-    trainer.save_model(model_name)
+    # trainer.save_model(model_name)
 
 # Image classification
 if predict:
