@@ -18,7 +18,7 @@ class ResNetClassifier(nn.Module):
         }
         self.num_classes = self.labels.__len__()
 
-        self.resnet = models.resnet50(weights=models.ResNet50_Weights.DEFAULT)
+        self.resnet = models.resnet18(weights=models.ResNet18_Weights.DEFAULT)
         self.resnet.fc = nn.Linear(self.resnet.fc.in_features, self.num_classes)
 
     def forward(self, x):
