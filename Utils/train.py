@@ -43,8 +43,8 @@ class Trainer:
 
         # Split the dataset into train and test sets
         train_dataset, test_dataset = random_split(dataset, [train_size, test_size])
-        self.train_data = DataLoader(train_dataset, batch_size=batch_size, shuffle=shuffle, drop_last=True)
-        self.test_data = DataLoader(test_dataset, batch_size=batch_size, drop_last=True)
+        self.train_data = DataLoader(train_dataset, batch_size=self.batch_size, shuffle=shuffle, drop_last=True)
+        self.test_data = DataLoader(test_dataset, batch_size=self.batch_size, drop_last=True)
 
 
     def train(self, epochs):
