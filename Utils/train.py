@@ -15,7 +15,8 @@ abs_path = os.path.abspath('.')
 root_dir = '/'.join(abs_path.split('/')[:-1])
 
 class Trainer:
-    def __init__(self, model, batch_size=32, shuffle=False, learning_rate=0.001, decay=0.0001):
+    def __init__(self, model, transform, batch_size=32, shuffle=False, learning_rate=0.001, decay=0.0001):
+         # Define the dataset and data loaders
         self.model = model
         self.batch_size = batch_size
         self.learning_rate = learning_rate
@@ -27,17 +28,14 @@ class Trainer:
         self.train_accuracy = []
         self.test_loss = []
         self.test_accuracy = []
-        self.class_correct = {i: 0 for i in range(5)}
-        self.class_total = {i: 0 for i in range(5)}
 
-         # Define the dataset and data loaders
-        transform = transforms.Compose(
-            [transforms.Resize((224, 224)),
-             transforms.ToTensor(),
-             transforms.Normalize(mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5])])
-
-        # Create the dataset
+        # Create the dataset and set model transform
         dataset = scrapedDataset(transform=transform)
+
+        # Get classes and initialize arrays to store accuracy information
+        self.classes = dataset.get_classes()
+        self.class_correct = {i: 0 for i in range(len(self.classes))}
+        self.class_total = {i: 0 for i in range(len(self.classes))}
 
         # Determine the sizes of the train and test sets
         train_size = int(0.8 * len(dataset))
@@ -145,9 +143,8 @@ class Trainer:
             plt.show()
 
     def plot_class_accuracy(self, show=False):
-        class_names = ['face_shield', 'gloves', 'goggles', 'lab_coat', 'scrub_cap']
-        class_accuracy = [100 * self.class_correct[i] / self.class_total[i] for i in range(10)]
-        plt.bar(class_names, class_accuracy)
+        class_accuracy = [100 * self.class_correct[i] / self.class_total[i] for i in range(len(self.classes))]
+        plt.bar(self.classes, class_accuracy)
         plt.xlabel('Class')
         plt.ylabel('Accuracy')
         plt.title('Model Accuracy by Class')

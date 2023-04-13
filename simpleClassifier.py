@@ -1,11 +1,17 @@
 import torch
 from PIL import Image
 import torch.nn as nn
-import torchvision.transforms as transforms
+from Utils.scrapedDataset import scrapedDataset
 
 class NNet(nn.Module):
-    def __init__(self, params=None) -> None:
+    def __init__(self, transform, params=None) -> None:
         super(NNet, self).__init__()
+        # Initialize transforms
+        self.transform = transform
+        
+        # Store output labels and number of classes
+        self.labels = scrapedDataset(get_class=True).get_labels()
+        self.num_classes = len(self.labels)
 
         # Add convolutional layers to extract features
         self.conv1 = nn.Conv2d(3, 16, kernel_size=3, stride=1, padding=1)
@@ -16,21 +22,12 @@ class NNet(nn.Module):
 
         # Fully connected layers to classify the images
         self.fc1 = nn.Linear(32 * 16 * 16, 64)
-        self.fc2 = nn.Linear(64, 3)
+        self.fc2 = nn.Linear(64, self.num_classes)
 
         # Handle saved model parameter loading
         self.params = params
         if self.params is not None:
             self.load_model()
-
-        # Store output labels
-        self.labels = {
-            0: 'face_shield',
-            1: 'gloves',
-            2: 'goggles',
-            3: 'lab_coat',
-            4: 'scrub_cap'
-        }
 
     def forward(self, x):
         # Apply convolutional layers with ReLU activation and max pooling
@@ -49,12 +46,7 @@ class NNet(nn.Module):
         if self.params is not None:
             # Load and preprocess the image
             image = Image.open(image_path)
-            transform = transforms.Compose([
-                transforms.Resize((64, 64)),
-                transforms.ToTensor(),
-                transforms.Normalize(mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5])
-            ])
-            input_tensor = transform(image)
+            input_tensor = self.transform(image)
             input_batch = input_tensor.unsqueeze(0) # type: ignore
 
             # Pass the image through the model
