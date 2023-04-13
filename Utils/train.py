@@ -27,6 +27,8 @@ class Trainer:
         self.train_accuracy = []
         self.test_loss = []
         self.test_accuracy = []
+        self.class_correct = {i: 0 for i in range(5)}
+        self.class_total = {i: 0 for i in range(5)}
 
          # Define the dataset and data loaders
         transform = transforms.Compose(
@@ -69,6 +71,12 @@ class Trainer:
                 _, predicted = torch.max(outputs.data, 1)
                 total += labels.size(0)
                 correct += (predicted == labels).sum().item()
+
+                # Update class accuracy
+                for i in range(self.batch_size):
+                    label = labels[i]
+                    self.class_correct[int(label)] += int(predicted[i] == label)
+                    self.class_total[int(label)] += 1
 
             train_loss = running_loss / len(self.train_data)
             train_accuracy = 100 * correct / total
@@ -133,6 +141,20 @@ class Trainer:
         if not os.path.exists(folder_path):
             os.makedirs(folder_path)
         plt.savefig(os.path.join(folder_path, f"{datetime.now().strftime('%y_%m_%d-%H_%M_%S')}_accuracy"))
+        if show:
+            plt.show()
+
+    def plot_class_accuracy(self, show=False):
+        class_names = ['face_shield', 'gloves', 'goggles', 'lab_coat', 'scrub_cap']
+        class_accuracy = [100 * self.class_correct[i] / self.class_total[i] for i in range(10)]
+        plt.bar(class_names, class_accuracy)
+        plt.xlabel('Class')
+        plt.ylabel('Accuracy')
+        plt.title('Model Accuracy by Class')
+        folder_path = os.path.join(root_dir, 'Plots')
+        if not os.path.exists(folder_path):
+            os.makedirs(folder_path)
+        plt.savefig(os.path.join(folder_path, f"{datetime.now().strftime('%y_%m_%d-%H_%M_%S')}_class_accuracy"))
         if show:
             plt.show()
 

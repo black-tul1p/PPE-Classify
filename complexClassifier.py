@@ -35,7 +35,7 @@ class NNet(nn.Module):
         self.dropout = nn.Dropout(p=0.5)
         
         # Fully connected layers to classify the images
-        self.fc1 = nn.Linear(256 * 13 * 13, 512)
+        self.fc1 = nn.Linear(256 * 25 * 25, 512)
         self.fc2 = nn.Linear(512, 256)
         self.fc3 = nn.Linear(256, self.num_classes)
 
@@ -67,7 +67,7 @@ class NNet(nn.Module):
             # Load and preprocess the image
             image = Image.open(image_path)
             transform = transforms.Compose([
-                transforms.Resize((64, 64)),
+                transforms.Resize((224, 224)),
                 transforms.ToTensor(),
                 transforms.Normalize(mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5])
             ])
