@@ -113,6 +113,7 @@ class Trainer:
 
 
     def plot_loss(self, show=False):
+        plt.clf()
         plt.plot(range(1, len(self.train_loss) + 1), self.train_loss, label='Train')
         plt.plot(range(1, len(self.test_loss) + 1), self.test_loss, label='Test')
         plt.xlabel('Epoch')
@@ -128,6 +129,7 @@ class Trainer:
 
 
     def plot_accuracy(self, show=False):
+        plt.clf()
         plt.plot(self.train_accuracy, label='Train')
         plt.plot(self.test_accuracy, label='Test')
         plt.xlabel('Epoch')
@@ -143,6 +145,7 @@ class Trainer:
             plt.show()
 
     def plot_class_accuracy(self, show=False):
+        plt.clf()
         class_accuracy = [100 * self.class_correct[i] / self.class_total[i] for i in range(len(self.classes))]
         plt.bar(self.classes, class_accuracy)
         plt.xlabel('Class')
