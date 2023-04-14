@@ -39,6 +39,8 @@ class Trainer:
         self.class_test_total = {i: 0 for i in range(len(self.classes))}
         self.class_train_correct = {i: 0 for i in range(len(self.classes))}
         self.class_train_total = {i: 0 for i in range(len(self.classes))}
+        self.class_train_acc = {i: [] for i in range(len(self.classes))}
+        self.class_test_acc = {i: [] for i in range(len(self.classes))}
 
         # Determine the sizes of the train and test sets
         train_size = int(0.8 * len(dataset))
@@ -73,11 +75,16 @@ class Trainer:
                 total += labels.size(0)
                 correct += (predicted == labels).sum().item()
 
-                # Update class train accuracy
+                # Calculate class train correct/total
                 for i in range(self.batch_size):
                     label = labels[i]
                     self.class_train_correct[int(label)] += int(predicted[i] == label)
                     self.class_train_total[int(label)] += 1
+
+            # Update class train accuracy
+            for j in range(len(self.classes)):
+                class_acc = self.class_train_correct[j] / self.class_train_total[j] * 100
+                self.class_train_acc[j].append(class_acc)
 
             train_loss = running_loss / len(self.train_data)
             train_accuracy = 100 * correct / total
@@ -87,9 +94,6 @@ class Trainer:
             test_loss, test_accuracy = self.test()
             self.test_loss.append(test_loss)
             self.test_accuracy.append(test_accuracy)
-
-            # print('Epoch [%d], Train Loss: %.4f, Train Accuracy: %.2f%%, Test Loss: %.4f, Test Accuracy: %.2f%%'
-            #       % (epoch + 1, train_loss, train_accuracy, test_loss, test_accuracy))
 
 
     def test(self):
@@ -110,11 +114,16 @@ class Trainer:
                 total += labels.size(0)
                 correct += (predicted == labels).sum().item()
 
-                # Update class test accuracy
+                # Calculate class test correct/total
                 for i in range(self.batch_size):
                     label = labels[i]
                     self.class_test_correct[int(label)] += int(predicted[i] == label)
                     self.class_test_total[int(label)] += 1
+
+            # Update class test accuracy
+            for i in range(len(self.classes)):
+                class_acc = self.class_test_correct[i] / self.class_test_total[i] * 100
+                self.class_test_acc[i].append(class_acc)
 
         test_loss /= len(self.test_data)
         test_accuracy = 100 * correct / total
@@ -157,7 +166,8 @@ class Trainer:
         if show:
             plt.show()
 
-    def plot_class_accuracy(self, show=False):
+    def plot_class_acc_bar(self, show=False):
+        plt.clf()
         # Extract class accuracy values
         train_acc = [self.class_train_correct[i] / self.class_train_total[i] * 100 for i in range(len(self.classes))]
         test_acc = [self.class_test_correct[i] / self.class_test_total[i] * 100 for i in range(len(self.classes))]
@@ -183,7 +193,36 @@ class Trainer:
         folder_path = os.path.join(root_dir, 'Plots')
         if not os.path.exists(folder_path):
             os.makedirs(folder_path)
-        plt.savefig(os.path.join(folder_path, f"{datetime.now().strftime('%y_%m_%d-%H_%M_%S')}_class_accuracy"))
+        plt.savefig(os.path.join(folder_path, f"{datetime.now().strftime('%y_%m_%d-%H_%M_%S')}_class_accuracy_bar"))
+        if show:
+            plt.show()
+
+    def plot_class_acc_line(self, show=False):
+        plt.clf()
+        # Create a figure with a subplot for each class
+        fig, axs = plt.subplots(len(self.classes), figsize=(8, 6), sharex=True, sharey=True)
+
+        # Iterate over the classes
+        for i, class_name in enumerate(self.classes):
+            # Plot the class train and test accuracy on the subplot
+            axs[i].plot(self.class_train_acc[i], label='train')
+            axs[i].plot(self.class_test_acc[i], label='test')
+            axs[i].set_title(class_name)
+            axs[i].set_xlabel('Epoch')
+            axs[i].set_ylabel('Accuracy (%)')
+            axs[i].set_ylim(0, 100)
+            axs[i].legend()
+
+         # Add a title for the whole figure
+        fig.suptitle("Class-wise Train/Test Accuracy", fontsize=16)
+
+        plt.tight_layout()
+        
+        # Save to folder
+        folder_path = os.path.join(root_dir, 'Plots')
+        if not os.path.exists(folder_path):
+            os.makedirs(folder_path)
+        plt.savefig(os.path.join(folder_path, f"{datetime.now().strftime('%y_%m_%d-%H_%M_%S')}_class_accuracy_line"))
         if show:
             plt.show()
 
