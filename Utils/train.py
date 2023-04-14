@@ -1,5 +1,6 @@
 import os
 import torch
+import numpy as np
 import torch.nn as nn
 from tqdm import tqdm
 import torch.optim as optim
@@ -34,8 +35,10 @@ class Trainer:
 
         # Get classes and initialize arrays to store accuracy information
         self.classes = dataset.get_classes()
-        self.class_correct = {i: 0 for i in range(len(self.classes))}
-        self.class_total = {i: 0 for i in range(len(self.classes))}
+        self.class_test_correct = {i: 0 for i in range(len(self.classes))}
+        self.class_test_total = {i: 0 for i in range(len(self.classes))}
+        self.class_train_correct = {i: 0 for i in range(len(self.classes))}
+        self.class_train_total = {i: 0 for i in range(len(self.classes))}
 
         # Determine the sizes of the train and test sets
         train_size = int(0.8 * len(dataset))
@@ -70,11 +73,11 @@ class Trainer:
                 total += labels.size(0)
                 correct += (predicted == labels).sum().item()
 
-                # Update class accuracy
+                # Update class train accuracy
                 for i in range(self.batch_size):
                     label = labels[i]
-                    self.class_correct[int(label)] += int(predicted[i] == label)
-                    self.class_total[int(label)] += 1
+                    self.class_train_correct[int(label)] += int(predicted[i] == label)
+                    self.class_train_total[int(label)] += 1
 
             train_loss = running_loss / len(self.train_data)
             train_accuracy = 100 * correct / total
@@ -107,6 +110,12 @@ class Trainer:
                 total += labels.size(0)
                 correct += (predicted == labels).sum().item()
 
+                # Update class test accuracy
+                for i in range(self.batch_size):
+                    label = labels[i]
+                    self.class_test_correct[int(label)] += int(predicted[i] == label)
+                    self.class_test_total[int(label)] += 1
+
         test_loss /= len(self.test_data)
         test_accuracy = 100 * correct / total
         return test_loss, test_accuracy
@@ -120,6 +129,8 @@ class Trainer:
         plt.ylabel('Loss')
         plt.title('Model Loss')
         plt.legend()
+
+        # Save to folder
         folder_path = os.path.join(root_dir, 'Plots')
         if not os.path.exists(folder_path):
             os.makedirs(folder_path)
@@ -137,6 +148,8 @@ class Trainer:
         plt.title('Model Accuracy')
         plt.ylim(0, 110)
         plt.legend()
+
+        # Save to folder
         folder_path = os.path.join(root_dir, 'Plots')
         if not os.path.exists(folder_path):
             os.makedirs(folder_path)
@@ -145,12 +158,28 @@ class Trainer:
             plt.show()
 
     def plot_class_accuracy(self, show=False):
-        plt.clf()
-        class_accuracy = [100 * self.class_correct[i] / self.class_total[i] for i in range(len(self.classes))]
-        plt.bar(self.classes, class_accuracy)
-        plt.xlabel('Class')
-        plt.ylabel('Accuracy')
-        plt.title('Model Accuracy by Class')
+        # Extract class accuracy values
+        train_acc = [self.class_train_correct[i] / self.class_train_total[i] * 100 for i in range(len(self.classes))]
+        test_acc = [self.class_test_correct[i] / self.class_test_total[i] * 100 for i in range(len(self.classes))]
+
+        # Set up bar plot data
+        bar_width = 0.35
+        r1 = np.arange(len(self.classes))
+        r2 = [x + bar_width for x in r1]
+
+        # Create bar plot
+        plt.bar(r1, train_acc, color='blue', width=bar_width, label='Train Accuracy')
+        plt.bar(r2, test_acc, color='orange', width=bar_width, label='Test Accuracy')
+        plt.xticks([r + bar_width / 2 for r in range(len(self.classes))], self.classes)
+        plt.ylabel('Accuracy (%)')
+        plt.legend()
+
+        # Add accuracy values above bars
+        for i, (train, test) in enumerate(zip(train_acc, test_acc)):
+            plt.text(r1[i] - bar_width/2, train+1, f"{train:.2f}%", color='black', fontweight='bold')
+            plt.text(r2[i] - bar_width/2, test+1, f"{test:.2f}%", color='black', fontweight='bold')
+
+        # Save to folder
         folder_path = os.path.join(root_dir, 'Plots')
         if not os.path.exists(folder_path):
             os.makedirs(folder_path)
