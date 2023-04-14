@@ -24,14 +24,14 @@ image_path = 'test.jpg'
 
 # Set transform
 transform = transforms.Compose(
-    [transforms.Resize((224, 224)),
+    [transforms.Resize((224, 244)),
     transforms.ToTensor(),
     transforms.Normalize(mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5])])
 
 # Training model
 if train:
     # Define the hyperparameters
-    epochs = 30
+    epochs = 100
     batch_size = 16
     learning_rate = 0.001
     decay = 0.000
@@ -41,22 +41,22 @@ if train:
     model = NNet(transform=transform)
 
     # Initialize complex trainer
-    self = Trainer(model=model,
+    trainer = Trainer(model=model,
                       transform=transform,
                       batch_size=batch_size, 
                       shuffle=True, 
                       learning_rate=learning_rate, 
                       decay=decay)
-    self.train(epochs)
+    trainer.train(epochs)
     trainer.plot_loss()
     trainer.plot_accuracy()
-    self.plot_class_acc_bar(show=True)
-    self.plot_class_acc_line(show=True)
+    trainer.plot_class_acc_bar()
+    trainer.plot_class_acc_line()
 
     # Save model
     bool = input("Save model? [Y/N]: ").lower() == 'y'
     if (bool):
-        self.save_model(model_name)
+        trainer.save_model(model_name)
         print("Model saved.")
 
 # Image classification
