@@ -31,7 +31,7 @@ transform = transforms.Compose(
 # Training model
 if train:
     # Define the hyperparameters
-    epochs = 50
+    epochs = 30
     batch_size = 16
     learning_rate = 0.001
     decay = 0.000
@@ -41,21 +41,22 @@ if train:
     model = NNet(transform=transform)
 
     # Initialize complex trainer
-    trainer = Trainer(model=model,
+    self = Trainer(model=model,
                       transform=transform,
                       batch_size=batch_size, 
                       shuffle=True, 
                       learning_rate=learning_rate, 
                       decay=decay)
-    trainer.train(epochs)
+    self.train(epochs)
     trainer.plot_loss()
     trainer.plot_accuracy()
-    trainer.plot_class_accuracy(show=True)
+    self.plot_class_acc_bar(show=True)
+    self.plot_class_acc_line(show=True)
 
     # Save model
-    bool = input("Save model? [Y/N]: ").lower() != 'n'
+    bool = input("Save model? [Y/N]: ").lower() == 'y'
     if (bool):
-        trainer.save_model(model_name)
+        self.save_model(model_name)
         print("Model saved.")
 
 # Image classification
