@@ -131,7 +131,7 @@ class Trainer:
 
 
     def plot_loss(self, show=False):
-        plt.clf()
+        plt.close('all')
         plt.plot(range(1, len(self.train_loss) + 1), self.train_loss, label='Train')
         plt.plot(range(1, len(self.test_loss) + 1), self.test_loss, label='Test')
         plt.xlabel('Epoch')
@@ -149,7 +149,7 @@ class Trainer:
 
 
     def plot_accuracy(self, show=False):
-        plt.clf()
+        plt.close('all')
         plt.plot(self.train_accuracy, label='Train')
         plt.plot(self.test_accuracy, label='Test')
         plt.xlabel('Epoch')
@@ -167,7 +167,7 @@ class Trainer:
             plt.show()
 
     def plot_class_acc_bar(self, show=False):
-        plt.clf()
+        plt.close('all')
         # Extract class accuracy values
         train_acc = [self.class_train_correct[i] / self.class_train_total[i] * 100 for i in range(len(self.classes))]
         test_acc = [self.class_test_correct[i] / self.class_test_total[i] * 100 for i in range(len(self.classes))]
@@ -198,9 +198,9 @@ class Trainer:
             plt.show()
 
     def plot_class_acc_line(self, show=False):
-        plt.clf()
+        plt.close('all')
         # Create a figure with a subplot for each class
-        fig, axs = plt.subplots(len(self.classes), figsize=(8, 6), sharex=True, sharey=True)
+        fig, axs = plt.subplots(len(self.classes), figsize=(6, 10), sharex=True, sharey=True)
 
         # Iterate over the classes
         for i, class_name in enumerate(self.classes):
